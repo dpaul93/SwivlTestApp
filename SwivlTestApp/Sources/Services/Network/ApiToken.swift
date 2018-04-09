@@ -46,13 +46,13 @@ protocol ApiToken {
 
 enum GitHubApiToken {
     case getUsers(page: Int, perPage: Int)
-    case getFollowers(user: String)
+    case getFollowers(link: String)
 }
 
 extension GitHubApiToken: Equatable {
     static func == (lhs: GitHubApiToken, rhs: GitHubApiToken) -> Bool {
         switch (lhs, rhs) {
-        case (.getFollowers(let lUser), .getFollowers(let rUser)): return lUser == rUser
+        case (.getFollowers(let lLink), .getFollowers(let rLink)): return lLink == rLink
         case (.getUsers(let lPage, let lPerPage), .getUsers(let rPage, let rPerPage)): return lPage == rPage && lPerPage == rPerPage
         default: return false
         }
@@ -61,7 +61,10 @@ extension GitHubApiToken: Equatable {
 
 extension GitHubApiToken: ApiToken {
     var baseUrl: String {
-        return "https://api.github.com"
+        switch self {
+        case .getFollowers(let link): return link
+        default: return "https://api.github.com"
+        }
     }
     
     var parameters: [String : Any] {
@@ -74,7 +77,7 @@ extension GitHubApiToken: ApiToken {
     var path: String {
         switch self {
         case .getUsers: return "/users"
-        case .getFollowers(let user): return "/users/\(user)/followers"
+        default: return ""
         }
     }
 

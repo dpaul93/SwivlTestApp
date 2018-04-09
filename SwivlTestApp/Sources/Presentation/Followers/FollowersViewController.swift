@@ -16,10 +16,6 @@ class FollowersViewController: UIViewController, FollowersPresenterOutput {
     
     fileprivate var presenter: FollowersPresenter!
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -57,6 +53,36 @@ class FollowersViewController: UIViewController, FollowersPresenterOutput {
         SVProgressHUD.dismiss()
         
         followersTableView.reloadData()
+    }
+}
+
+extension FollowersViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return presenter.viewModels.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard
+            let cell = tableView.dequeueReusableCell(withIdentifier: UsersTableViewCell.reuseIdentifier()) as? UsersTableViewCell,
+            let viewModel = presenter.viewModels[safe: indexPath.row]
+            else { return UITableViewCell() }
+        
+        cell.populate(with: viewModel)
+        
+        return cell
+    }
+}
+
+extension FollowersViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let viewModel = presenter.viewModels[safe: indexPath.row] {
+            presenter.handleSelectedViewModel(viewModel)
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 

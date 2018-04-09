@@ -24,6 +24,7 @@ protocol UsersPresenter: class {
     func handleViewIsReady()
     func loadUsers()
     func loadNextUsers()
+    func handleSelectedViewModel(_ viewModel: UsersTableViewCellViewModel)
 }
 
 // MARK: - Implementation
@@ -60,6 +61,12 @@ private final class UsersPresenterImpl: UsersPresenter, UsersInteractorOutput {
     func loadNextUsers() {
         interactor.loadNextUsers { [weak self] result in
             self?.handleUsersResponse(result)
+        }
+    }
+    
+    func handleSelectedViewModel(_ viewModel: UsersTableViewCellViewModel) {
+        if let link = interactor.getFollowersLink(with: viewModel) {
+            router.routeToFollowers(with: link)
         }
     }
     

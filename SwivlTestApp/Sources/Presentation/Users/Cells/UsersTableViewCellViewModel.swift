@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: Protocol
 
-protocol UsersTableViewCellViewModel {
+protocol UsersTableViewCellViewModel: class {
     var photoURL: URL? { get }
     var name: String? { get }
     var profileURL: String? { get }

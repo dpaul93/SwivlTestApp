@@ -22,6 +22,7 @@ protocol UsersInteractor: class {
     
     func loadUsers(_ completion: @escaping (Result<[UserDTO], ContentError>) -> ())
     func loadNextUsers(_ completion: @escaping (Result<[UserDTO], ContentError>) -> ())
+    func getFollowersLink(with viewModel: UsersTableViewCellViewModel) -> String?
 }
 
 // MARK: - Implementation
@@ -59,6 +60,14 @@ private final class UsersInteractorImpl: UsersInteractor {
         }
         let token = GitHubApiToken.getUsers(page: page, perPage: perPage)
         loadUsers(with: token, completion)
+    }
+    
+    func getFollowersLink(with viewModel: UsersTableViewCellViewModel) -> String? {
+        return users.filter { user in
+            user.name == viewModel.name &&
+            user.profilePicURL == viewModel.photoURL?.absoluteString &&
+            user.profileURL == viewModel.profileURL
+        }.first?.followersURL
     }
     
     // MARK: - Helpers

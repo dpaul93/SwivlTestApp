@@ -30,7 +30,6 @@ class UsersViewController: UIViewController, UsersPresenterOutput {
         usersTableView.separatorColor = .gray
         usersTableView.tableFooterView = UIView(frame: .zero)
         usersTableView.rowHeight = UITableViewAutomaticDimension
-        usersTableView.estimatedRowHeight = 116
         
         usersTableView.register(UsersTableViewCell.nib(), forCellReuseIdentifier: UsersTableViewCell.reuseIdentifier())
     }
@@ -78,7 +77,10 @@ extension UsersViewController: UITableViewDataSource {
 
 extension UsersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        if let viewModel = presenter.viewModels[safe: indexPath.row] {
+            presenter.handleSelectedViewModel(viewModel)
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
